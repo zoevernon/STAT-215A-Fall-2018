@@ -92,7 +92,7 @@ Your report and code will be submitted via GitHub. The following instructions wi
 
 Once you have completed these first steps, you are then ready to create your private GitHub repository for this class.
 
-1. Locally on your machine, clone my stat215a repository: `git clone https://github.com/zoevernon/STAT-215A-Fall-2018. This will create a copy of the repository on your own computer.
+1. Locally on your machine, clone my stat215a repository: `git clone https://github.com/zoevernon/stat215a. This will create a copy of the repository on your own computer.
 
 1. On the GitHub website, log in and create a **private** remote repository called *stat215a*. Add me (*zoevernon*) as a collaborator for this repository (check out settings on the repo website).
 
