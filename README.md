@@ -24,9 +24,9 @@ Fridays, 9-11, Evans 344
 
 **Office Hours**:
 
-*Bin*: 
+*Bin*:  TBD
 
-*Rebecca*: TBD
+*Zoe*: TBD
 
 
 
