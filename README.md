@@ -1,4 +1,4 @@
-# STAT 215A, Fall 2018
+stat-215-a# STAT 215A, Fall 2018
 
 This is the GitHub repository for STAT 215A, Fall 2018.
 
@@ -92,11 +92,11 @@ Your report and code will be submitted via GitHub. The following instructions wi
 
 Once you have completed these first steps, you are then ready to create your private GitHub repository for this class.
 
-1. Locally on your machine, clone my stat215a repository: `git clone https://github.com/zoevernon/stat215a. This will create a copy of the repository on your own computer.
+1. Locally on your machine, clone my stat-215-a repository: `git clone https://github.com/zoevernon/stat-215-a. This will create a copy of the repository on your own computer.
 
-1. On the GitHub website, log in and create a **private** remote repository called *stat215a*. Add me (*zoevernon*) as a collaborator for this repository (check out settings on the repo website).
+1. On the GitHub website, log in and create a **private** remote repository called *stat-215-a*. Add me (*zoevernon*) as a collaborator for this repository (check out settings on the repo website).
 
-1. Back in the terminal, set the origin of your local repository to be the remote repository that you just made. Change USERNAME below to your username. This tells git which remote repository to push your changes to when you `git push` (`git remote set-url origin https://github.com/USERNAME/stat215a.git`).
+1. Back in the terminal, set the origin of your local repository to be the remote repository that you just made. Change USERNAME below to your username. This tells git which remote repository to push your changes to when you `git push` (`git remote set-url origin https://github.com/USERNAME/stat-215-a.git`).
 
 1. Edit *info.txt* to reflect your own information.
 
@@ -115,11 +115,11 @@ Now you're ready to push to your remote repository for the first time:
 
 1. Push your changes to your copy of the remote repository (`git push` or sometimes `git push remote origin`)
 
-1. Check that info.txt has been updated in your remote github repository by navigating to https://github.com/USERNAME/stat215a (change USERNAME to your username)
+1. Check that info.txt has been updated in your remote github repository by navigating to https://github.com/USERNAME/stat-215-a (change USERNAME to your username)
 
 ## Submitting your projects
 
-To submit your projects, you will need to create a subfolder in your local `stat215a` folder called `lab1` (if you are submitting lab 1). Inside this folder you should have the following (exact) structure:
+To submit your projects, you will need to create a subfolder in your local `stat-215-a` folder called `lab1` (if you are submitting lab 1). Inside this folder you should have the following (exact) structure:
 
 ```
 lab1/
@@ -146,7 +146,7 @@ Note that GitHub cannot host files more than 100 MB. If you try to push a file l
 
 When you are ready, you need to add, commit, and push the `lab1/` folder.
 
-At the time when the lab is due, we will run a script that automatically pulls all of your assignments into my local versions of your `stat215a` repositories. Please make sure to submit your labs on time. We will spend some time in a lab having everyone submit a pretend assignment so that you are all clear on what to do.
+At the time when the lab is due, we will run a script that automatically pulls all of your assignments into my local versions of your `stat-215-a` repositories. Please make sure to submit your labs on time. We will spend some time in a lab having everyone submit a pretend assignment so that you are all clear on what to do.
 
 ## Peer-reviews
 
