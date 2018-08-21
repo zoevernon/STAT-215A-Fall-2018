@@ -126,7 +126,190 @@ $(document).ready(function () {
 <p>This is an introduction to the basic functions in tidyverse, which contains multiple libaries that are useful for manipulating and plotting data in R.</p>
 <div id="dyplr" class="section level1">
 <h1>dyplr</h1>
-<p>The first function we look at in dplyr is <code>test</code></p>
+<div id="piping" class="section level2">
+<h2>piping</h2>
+<p>Piping is a way to chain function together to avoid redefining variables. Below we look at the head of the iris data frame using piping.</p>
+<pre class="r"><code># without using piping
+head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<pre class="r"><code># produces same result but with piping
+iris %&gt;% head()</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+</div>
+<div id="filter" class="section level2">
+<h2>filter</h2>
+<p>Now we look at <code>filter()</code> which finds rows where the specified condition is true and returns those rows as a data frame. Here we use <code>filter()</code> to get only the rows in the data frame that are from the versicolor species.</p>
+<pre class="r"><code># using filter() without piping
+head(filter(iris, Species == &quot;versicolor&quot;))</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+## 1          7.0         3.2          4.7         1.4 versicolor
+## 2          6.4         3.2          4.5         1.5 versicolor
+## 3          6.9         3.1          4.9         1.5 versicolor
+## 4          5.5         2.3          4.0         1.3 versicolor
+## 5          6.5         2.8          4.6         1.5 versicolor
+## 6          5.7         2.8          4.5         1.3 versicolor</code></pre>
+<pre class="r"><code># same thing but using piping instead
+iris %&gt;% 
+  filter(Species == &quot;versicolor&quot;) %&gt;% 
+  head()</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+## 1          7.0         3.2          4.7         1.4 versicolor
+## 2          6.4         3.2          4.5         1.5 versicolor
+## 3          6.9         3.1          4.9         1.5 versicolor
+## 4          5.5         2.3          4.0         1.3 versicolor
+## 5          6.5         2.8          4.6         1.5 versicolor
+## 6          5.7         2.8          4.5         1.3 versicolor</code></pre>
+<pre class="r"><code># check dimension of data frame
+iris %&gt;% 
+  filter(Species == &quot;versicolor&quot;) %&gt;% 
+  dim()</code></pre>
+<pre><code>## [1] 50  5</code></pre>
+<p>Instead of just filtering out one species we could look at all observations that are versicolor as well as setosa.</p>
+<pre class="r"><code># save all rows that are veriscolor of setosa 
+iris %&gt;% 
+  filter(Species %in% c(&quot;versicolor&quot;, &quot;setosa&quot;)) %&gt;% 
+  head()</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<pre class="r"><code># check dimension of data frame
+iris %&gt;% 
+  filter(Species %in% c(&quot;versicolor&quot;, &quot;setosa&quot;)) %&gt;% 
+  dim()</code></pre>
+<pre><code>## [1] 100   5</code></pre>
+</div>
+<div id="select" class="section level2">
+<h2>select</h2>
+<p>Now we look at <code>select()</code> which keeps or removes only certain variables (selecting columns of the data frame, whereas before we were filtering by row). Here we use <code>select()</code> to keep only the columns that contain the species and sepal length information</p>
+<pre class="r"><code>iris %&gt;% 
+  filter(Species == &quot;versicolor&quot;) %&gt;% 
+  select(Sepal.Length, Species) %&gt;% 
+  head()</code></pre>
+<pre><code>##   Sepal.Length    Species
+## 1          7.0 versicolor
+## 2          6.4 versicolor
+## 3          6.9 versicolor
+## 4          5.5 versicolor
+## 5          6.5 versicolor
+## 6          5.7 versicolor</code></pre>
+<p>We can also select all the columns except for sepal length by typing</p>
+<pre class="r"><code>iris %&gt;% 
+  filter(Species == &quot;versicolor&quot;) %&gt;% 
+  select(-Sepal.Length) %&gt;% 
+  head()</code></pre>
+<pre><code>##   Sepal.Width Petal.Length Petal.Width    Species
+## 1         3.2          4.7         1.4 versicolor
+## 2         3.2          4.5         1.5 versicolor
+## 3         3.1          4.9         1.5 versicolor
+## 4         2.3          4.0         1.3 versicolor
+## 5         2.8          4.6         1.5 versicolor
+## 6         2.8          4.5         1.3 versicolor</code></pre>
+</div>
+<div id="mutate" class="section level2">
+<h2>mutate</h2>
+<p>Now we look at <code>mutate()</code> which creates new variables consisting of functions of existing variables. First we use <code>mutate()</code> to create a new variable that is the sum of sepal length and sepal width</p>
+<pre class="r"><code>iris %&gt;% 
+  filter(Species == &quot;versicolor&quot;) %&gt;% 
+  mutate(Sepal.Sum = Sepal.Length + Sepal.Width) %&gt;% 
+  head()</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width    Species Sepal.Sum
+## 1          7.0         3.2          4.7         1.4 versicolor      10.2
+## 2          6.4         3.2          4.5         1.5 versicolor       9.6
+## 3          6.9         3.1          4.9         1.5 versicolor      10.0
+## 4          5.5         2.3          4.0         1.3 versicolor       7.8
+## 5          6.5         2.8          4.6         1.5 versicolor       9.3
+## 6          5.7         2.8          4.5         1.3 versicolor       8.5</code></pre>
+<p>Next we use <code>mutate_at()</code> to multiply each Sepal.length and Sepal.Width by 2</p>
+<pre class="r"><code>iris %&gt;% 
+  filter(Species == &quot;versicolor&quot;) %&gt;% 
+  mutate_at(vars(contains(&quot;Sepal&quot;)), funs(2 * .)) %&gt;% 
+  head()</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+## 1         14.0         6.4          4.7         1.4 versicolor
+## 2         12.8         6.4          4.5         1.5 versicolor
+## 3         13.8         6.2          4.9         1.5 versicolor
+## 4         11.0         4.6          4.0         1.3 versicolor
+## 5         13.0         5.6          4.6         1.5 versicolor
+## 6         11.4         5.6          4.5         1.3 versicolor</code></pre>
+</div>
+<div id="group_by-and-summarize" class="section level2">
+<h2>group_by and summarize</h2>
+<p><code>group_by()</code> is a function that changes from operating on the entire dataset to operating on it group-by-group, while <code>summarize()</code> allows us to summarize the group into a single value. Below we group the dataset by species and take the mean of t</p>
+<pre class="r"><code>iris %&gt;% 
+  group_by(Species) %&gt;%  
+  summarize(mean.length = mean(Sepal.Length), n = n())</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   Species    mean.length     n
+##   &lt;fct&gt;            &lt;dbl&gt; &lt;int&gt;
+## 1 setosa            5.01    50
+## 2 versicolor        5.94    50
+## 3 virginica         6.59    50</code></pre>
+</div>
+</div>
+<div id="tidyr" class="section level1">
+<h1>tidyr</h1>
+<p>tidyr contains functions for changing the shape of the data, allowing you to transition columns into rows and rows into columns. The two main functions are <code>spread()</code> and <code>gather()</code></p>
+<div id="gather" class="section level2">
+<h2>gather</h2>
+<pre class="r"><code># top
+iris %&gt;% 
+  mutate(row = row_number()) %&gt;%
+  gather(key = &quot;Variable&quot;, value = &quot;Value&quot;, -Species) %&gt;%
+  head()</code></pre>
+<pre><code>##   Species     Variable Value
+## 1  setosa Sepal.Length   5.1
+## 2  setosa Sepal.Length   4.9
+## 3  setosa Sepal.Length   4.7
+## 4  setosa Sepal.Length   4.6
+## 5  setosa Sepal.Length   5.0
+## 6  setosa Sepal.Length   5.4</code></pre>
+<pre class="r"><code># bottom 
+iris %&gt;% 
+  mutate(row = row_number()) %&gt;%
+  gather(key = &quot;Variable&quot;, value = &quot;Value&quot;, -Species) %&gt;%
+  tail()</code></pre>
+<pre><code>##       Species Variable Value
+## 745 virginica      row   145
+## 746 virginica      row   146
+## 747 virginica      row   147
+## 748 virginica      row   148
+## 749 virginica      row   149
+## 750 virginica      row   150</code></pre>
+</div>
+<div id="spread" class="section level2">
+<h2>spread</h2>
+<pre class="r"><code>iris_long &lt;- iris %&gt;% 
+  mutate(row = row_number()) %&gt;%
+  gather(key = &quot;Variable&quot;, value = &quot;Value&quot;, -Species, -row)
+
+iris_wide &lt;- iris_long %&gt;% 
+  spread(key = Variable, value = Value)
+
+iris_wide %&gt;% head()</code></pre>
+<pre><code>##   Species row Petal.Length Petal.Width Sepal.Length Sepal.Width
+## 1  setosa   1          1.4         0.2          5.1         3.5
+## 2  setosa   2          1.4         0.2          4.9         3.0
+## 3  setosa   3          1.3         0.2          4.7         3.2
+## 4  setosa   4          1.5         0.2          4.6         3.1
+## 5  setosa   5          1.4         0.2          5.0         3.6
+## 6  setosa   6          1.7         0.4          5.4         3.9</code></pre>
+</div>
 </div>
 
 
