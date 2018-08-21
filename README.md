@@ -44,6 +44,12 @@ We will also be using Git and GitHub a lot in this course. Here are some resourc
 
 - Software Carpentry has a thorough [Git and GitHub tutorial](http://swcarpentry.github.io/git-novice/) available for free.
 
+Finally, here are some resources that give instructions on how to be a good referee for academic papers.  Some of the information in these links is not relevant to the course itself as these reports will not be published and therefore you will not be asked to make a decision about whether or not to accept or reject the report.  However, being a good, thoughtful referee is an important skill to build, and these guides will provide a helpful way to start thinking about how to give appropriate and informative feedback to your peers. 
+
+- A short document with bulleted advice on "How to Referee a Research Paper" by Dave Gifford: [https://people.csail.mit.edu/fredo/gifford-how-to-referee.pdf](https://people.csail.mit.edu/fredo/gifford-how-to-referee.pdf)
+
+- A guide to writing a referee report by Martin Farnham: [http://web.uvic.ca/~mfarnham/phd_seminar/how_to_referee.pdf](http://web.uvic.ca/~mfarnham/phd_seminar/how_to_referee.pdf)
+
 # The lab assignments
 
 There will be 4-5 lab reports throughout the semester. These reports are a *big deal*. It is in completing these reports that the real learning happens. You will get to apply what you've learned in the lectures and labs to real datasets (with real issues). You will also learn to develop a narrative that reports your scientific findings as accurately and accessibly as possible: you will learn to tell a story with your analysis.
