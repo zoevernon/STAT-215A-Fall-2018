@@ -1,0 +1,141 @@
+---
+title: "Tidyverse examples"
+output: html_document
+date: "8/24/2018"
+---
+
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+```
+
+This is an introduction to the basic functions in tidyverse, which contains multiple libaries that are useful for manipulating and plotting data in R. 
+
+# dyplr
+## piping 
+Piping is a way to chain function together to avoid redefining variables.  Below we look at the head of the iris data frame using piping.
+```{r piping, message = FALSE, warning = FALSE}
+# without using piping
+head(iris)
+
+# produces same result but with piping
+iris %>% head()
+```
+
+## filter
+Now we look at ```filter()``` which finds rows where the specified condition is true and returns those rows as a data frame. Here we use ```filter()``` to get only the rows in the data frame that are from the versicolor species.  
+
+```{r filter, message = FALSE, warning = FALSE}
+# using filter() without piping
+head(filter(iris, Species == "versicolor"))
+
+# same thing but using piping instead
+iris %>% 
+  filter(Species == "versicolor") %>% 
+  head()
+
+# check dimension of data frame
+iris %>% 
+  filter(Species == "versicolor") %>% 
+  dim()
+```
+
+Instead of just filtering out one species we could look at all observations that are versicolor as well as setosa.  
+
+```{r filter_two, message = FALSE, warning = FALSE}
+# save all rows that are veriscolor of setosa 
+iris %>% 
+  filter(Species %in% c("versicolor", "setosa")) %>% 
+  head()
+
+# check dimension of data frame
+iris %>% 
+  filter(Species %in% c("versicolor", "setosa")) %>% 
+  dim()
+```
+
+
+## select
+Now we look at ```select()``` which keeps or removes only certain variables (selecting columns of the data frame, whereas before we were filtering by row). Here we use ```select()``` to keep only the columns that contain the species and sepal length information
+
+```{r select, message = FALSE, warning = FALSE}
+iris %>% 
+  filter(Species == "versicolor") %>% 
+  select(Sepal.Length, Species) %>% 
+  head()
+```
+
+We can also select all the columns except for sepal length by typing
+
+```{r select_multiple, message = FALSE, warning = FALSE}
+iris %>% 
+  filter(Species == "versicolor") %>% 
+  select(-Sepal.Length) %>% 
+  head()
+```
+## mutate
+Now we look at ```mutate()``` which creates new variables consisting of functions of existing variables. First we use ```mutate()``` to create a new variable that is the sum of sepal length and sepal width
+
+```{r mutate_sum, message = FALSE, warning = FALSE}
+iris %>% 
+  filter(Species == "versicolor") %>% 
+  mutate(Sepal.Sum = Sepal.Length + Sepal.Width) %>% 
+  head()
+```
+
+Next we use ```mutate_at()``` to multiply each Sepal.length and Sepal.Width by 2 
+
+```{r mutate_multiple, message = FALSE, warning = FALSE}
+iris %>% 
+  filter(Species == "versicolor") %>% 
+  mutate_at(vars(contains("Sepal")), funs(2 * .)) %>% 
+  head()
+```
+
+## group_by and summarize
+ ```group_by()``` is a function that changes from operating on the entire dataset to operating on it group-by-group, while ```summarize()``` allows us to summarize the group into a single value.  Below we group the dataset by species and take the mean of t
+
+```{r group_by, message = FALSE, warning = FALSE}
+iris %>% 
+  group_by(Species) %>%  
+  summarize(mean.length = mean(Sepal.Length), n = n())
+```
+# tidyr
+tidyr contains functions for changing the shape of the data, allowing you to transition columns into rows and rows into columns.  The two main functions are ```spread()``` and ```gather()```
+
+## gather
+```{r gather, message = FALSE, warning = FALSE}
+# top
+iris %>% 
+  mutate(row = row_number()) %>%
+  gather(key = "Variable", value = "Value", -Species) %>%
+  head()
+
+# bottom 
+iris %>% 
+  mutate(row = row_number()) %>%
+  gather(key = "Variable", value = "Value", -Species) %>%
+  tail()
+```
+
+## spread
+```{r spread, message = FALSE, warning = FALSE}
+iris_long <- iris %>% 
+  mutate(row = row_number()) %>%
+  gather(key = "Variable", value = "Value", -Species, -row)
+
+iris_wide <- iris_long %>% 
+  spread(key = Variable, value = Value)
+
+iris_wide %>% head()
+```
+
+
+
+
+
+
+
+
+
+
