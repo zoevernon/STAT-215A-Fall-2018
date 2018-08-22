@@ -65,7 +65,7 @@ The current tentative dates for the labs are as follows:
 | Stability of Linguistic Survey | October 12   | October 19 (1 week)     | October 26                |
 | Cloud detection (group project)| October 26   | November 9 (2 weeks)   |   November 16             |
 | *Midterm*                      | November 13    |                         | No peer review        |
-| fMRI (final project)           | November 16   | December 7 (3 weeks)    | (graded by Zoe)        |
+| fMRI (final project)           | November 16   | December 7 (3 weeks)    | No peer review        |
 
 
 
