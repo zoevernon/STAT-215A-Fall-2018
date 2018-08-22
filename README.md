@@ -63,7 +63,7 @@ The current tentative dates for the labs are as follows:
 | Redwood trees                  | August 31  | September 14 (2 weeks)  | September 21               |
 | Linguistic Survey              |   September 21 | October 5 (2 weeks)     | October 12               |
 | Stability of Linguistic Survey | October 12   | October 19 (1 week)     | October 26                |
-| Cloud detection (group project)| October 26   | November 16 (3 weeks)   |   November 23             |
+| Cloud detection (group project)| October 26   | November 9 (2 weeks)   |   November 16             |
 | *Midterm*                      | November 13    |                         | No peer review        |
 | fMRI (final project)           | November 16   | December 7 (3 weeks)    | (graded by Zoe)        |
 
