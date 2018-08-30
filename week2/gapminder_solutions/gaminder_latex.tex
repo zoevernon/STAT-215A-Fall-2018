@@ -1,0 +1,345 @@
+% Thanks to Rebecca Barter for sharing this with me
+\documentclass[english]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+
+\usepackage{geometry}
+\geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\parskip}{\smallskipamount}
+\setlength{\parindent}{0pt}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage{float} % required for fig.pos = "H"
+
+\title{Gapminder exploration}
+\author{Zoe Vernon}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Gapminder is an excellent organization aimed at increasing the use and understanding of statistics on a number of global topics. They collect a variety of data from many sources and aim to produce fact-based statistics reflecting the current state of our world. The data we are exploring throughout this analysis consists of population, life expectency and GDP information for many countries through time.
+
+The data can be found from \url{https://raw.githubusercontent.com/resbaz/r-novice-gapminder-files/master/data/gapminder-FiveYearData.csv} if you would like to download it yourself.
+
+
+
+
+
+Fortunately, the data was already very clean, so we did not conduct any major modifications to the data.
+
+
+
+
+
+\section{Visualizing the gapminder data (ggplot2)}
+
+
+We are interested in exploring life expectancy as a function of GDP. Figure \ref{fig:gdp-life} shows a scatterplot of life expectancy versus GDP.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/gdp-life-1} 
+
+}
+
+\caption[Life expectancy versus GDP for all countries in the year 2007]{Life expectancy versus GDP for all countries in the year 2007}\label{fig:gdp-life}
+\end{figure}
+
+
+\end{knitrout}
+
+
+It certainly appears as though there is some kind of rapid increase in the low GDP range, which slows to a gradual increase in the high GDP range. Several African countries have surprisingly low life expectency for their GDP.
+
+Next, we explore change in life expectancy over time. Figure \ref{fig:life-time} shows a series of boxplots, one for each year-continent combination. Each data point corresponds to the life expectency of a country for the given year in the given continent.
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
+
+{\centering \includegraphics[width=\maxwidth]{figure/life-time-1} 
+
+}
+
+\caption[Life expectancy over time]{Life expectancy over time}\label{fig:life-time}
+\end{figure}
+
+
+\end{knitrout}
+
+
+We see that the life expectancy increased in Africa from 1950 up until the 1990s but has stayed fairly constant with a median of around 50 years since the 1990s. The Americas, Asia, and Europe on the other hand, have experienced continued growth. 
+
+\subsection{Comparing GDP across continents (dplyr)}
+
+Table 1 compares GDP per capita across continents.
+
+
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-2 package
+% Wed Aug 29 21:17:45 2018
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+  \hline
+continent & countries & mean & SD \\ 
+  \hline
+Oceania &   2 & 29810.19 & 6540.99 \\ 
+  Europe &  30 & 25054.48 & 11800.34 \\ 
+  Asia &  33 & 12473.03 & 14154.94 \\ 
+  Americas &  25 & 11003.03 & 9713.21 \\ 
+  Africa &  52 & 3089.03 & 3618.16 \\ 
+   \hline
+\end{tabular}
+\caption{A table displaying the mean and standard deviation of GDP per capita in 2007 for each continent} 
+\label{gdp_table}
+\end{table}
+
+
+
+Clearly Oceania is leading the way in terms of GDP per cap.
+
+Next, we want to ask about raw GDP (i.e. overall GDP for each country, rather than standardized by per capita). Table 2 shows the average total GDP for each continent for 2007.
+
+
+% latex table generated in R 3.5.1 by xtable 1.8-2 package
+% Wed Aug 29 21:17:45 2018
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+  \hline
+continent & countries & mean & SD \\ 
+  \hline
+Americas & 25 & 777 & 2573 \\ 
+  Asia & 33 & 628 & 1344 \\ 
+  Europe & 30 & 493 & 678 \\ 
+  Oceania & 2 & 404 & 424 \\ 
+  Africa & 52 & 46 & 92 \\ 
+   \hline
+\end{tabular}
+\caption{A table displaying the mean and standard deviation of GDP (in billions) in 2007 for each continent} 
+\label{total_gdp_table}
+\end{table}
+
+
+\section{tidyr()}
+See http://swcarpentry.github.io/r-novice-gapminder/14-tidyr/ for more ways to use ```tidyr()``` on this data.
+
+The gapminder data that we used for visualization was already in a clean usuable format.  Here we are given a dataset that requires some processing to get in a more useful form.  
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# load the wide format of the data}
+\hlstd{gapminder_wide} \hlkwb{<-} \hlkwd{loadGapminderData}\hlstd{(}\hlkwc{path} \hlstd{=} \hlstr{"data/"}\hlstd{,}
+                                    \hlkwc{filename} \hlstd{=} \hlstr{"gapminder_wide.csv"}\hlstd{)}
+
+\hlcom{# look at wide_data comapred to original }
+\hlkwd{dim}\hlstd{(gapminder_wide)}
+\end{alltt}
+\begin{verbatim}
+## [1] 142  38
+\end{verbatim}
+\begin{alltt}
+\hlkwd{dim}\hlstd{(gapminder)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1704    6
+\end{verbatim}
+\begin{alltt}
+\hlkwd{head}\hlstd{(gapminder_wide)[,} \hlkwd{c}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{4}\hlstd{,} \hlnum{37}\hlopt{:}\hlnum{38}\hlstd{)]}
+\end{alltt}
+\begin{verbatim}
+##   continent      country gdpPercap_1952 gdpPercap_1957 pop_2002 pop_2007
+## 1    Africa      Algeria      2449.0082      3013.9760 31287142 33333216
+## 2    Africa       Angola      3520.6103      3827.9405 10866106 12420476
+## 3    Africa        Benin      1062.7522       959.6011  7026113  8078314
+## 4    Africa     Botswana       851.2411       918.2325  1630347  1639131
+## 5    Africa Burkina Faso       543.2552       617.1835 12251209 14326203
+## 6    Africa      Burundi       339.2965       379.5646  7021078  8390505
+\end{verbatim}
+\begin{alltt}
+\hlkwd{head}\hlstd{(gapminder)}
+\end{alltt}
+\begin{verbatim}
+##       country year population continent life_exp gdp_per_cap
+## 1 Afghanistan 1952    8425333      Asia   28.801    779.4453
+## 2 Afghanistan 1957    9240934      Asia   30.332    820.8530
+## 3 Afghanistan 1962   10267083      Asia   31.997    853.1007
+## 4 Afghanistan 1967   11537966      Asia   34.020    836.1971
+## 5 Afghanistan 1972   13079460      Asia   36.088    739.9811
+## 6 Afghanistan 1977   14880372      Asia   38.438    786.1134
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+We can that the wide version now has a separate column for each year of GDP, life expectancy, and population.  This data becomes much easier to work with and understand if we can make year into a column.  First, we use the ```gather()``` function to create a long version of the data where we only have 4 columns, one each for continent and country, one (obstype\_year) that gives the key for the values (obs\_values) in the fourth column.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{gapminder_long} \hlkwb{<-} \hlstd{gapminder_wide} \hlopt{%>%}
+  \hlkwd{gather}\hlstd{(}\hlkwc{key}   \hlstd{= obstype_year,} \hlcom{# name new column for ID variable}
+         \hlkwc{value} \hlstd{= obs_values,}   \hlcom{# name column that will contain the observations}
+         \hlkwd{starts_with}\hlstd{(}\hlstr{'pop'}\hlstd{),}             \hlcom{# only include columns that start  }
+         \hlkwd{starts_with}\hlstd{(}\hlstr{'lifeExp'}\hlstd{),}         \hlcom{# pop, lifeExp, or gdpPercap}
+         \hlkwd{starts_with}\hlstd{(}\hlstr{'gdpPercap'}\hlstd{))}
+
+\hlkwd{head}\hlstd{(gapminder_long)}
+\end{alltt}
+\begin{verbatim}
+##   continent      country obstype_year obs_values
+## 1    Africa      Algeria     pop_1952    9279525
+## 2    Africa       Angola     pop_1952    4232095
+## 3    Africa        Benin     pop_1952    1738315
+## 4    Africa     Botswana     pop_1952     442308
+## 5    Africa Burkina Faso     pop_1952    4469979
+## 6    Africa      Burundi     pop_1952    2445618
+\end{verbatim}
+\begin{alltt}
+\hlkwd{tail}\hlstd{(gapminder_long)}
+\end{alltt}
+\begin{verbatim}
+##      continent        country   obstype_year obs_values
+## 5107    Europe         Sweden gdpPercap_2007  33859.748
+## 5108    Europe    Switzerland gdpPercap_2007  37506.419
+## 5109    Europe         Turkey gdpPercap_2007   8458.276
+## 5110    Europe United Kingdom gdpPercap_2007  33203.261
+## 5111   Oceania      Australia gdpPercap_2007  34435.367
+## 5112   Oceania    New Zealand gdpPercap_2007  25185.009
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+Next, we separate the obstype\_year variable into two separate columns, one that contains the year of the observation and another that tells whether the value in obs\_values is gdp, life expectancy, or population. 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# separate the obstype_year into two }
+\hlstd{gapminder_long} \hlkwb{<-} \hlstd{gapminder_long} \hlopt{%>%}
+  \hlkwd{separate}\hlstd{(obstype_year,}
+           \hlkwc{into} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{'obs_type'}\hlstd{,}\hlstr{'year'}\hlstd{),}
+           \hlkwc{sep}\hlstd{=}\hlstr{"_"}\hlstd{)}
+
+\hlkwd{head}\hlstd{(gapminder_long)}
+\end{alltt}
+\begin{verbatim}
+##   continent      country obs_type year obs_values
+## 1    Africa      Algeria      pop 1952    9279525
+## 2    Africa       Angola      pop 1952    4232095
+## 3    Africa        Benin      pop 1952    1738315
+## 4    Africa     Botswana      pop 1952     442308
+## 5    Africa Burkina Faso      pop 1952    4469979
+## 6    Africa      Burundi      pop 1952    2445618
+\end{verbatim}
+\begin{alltt}
+\hlkwd{tail}\hlstd{(gapminder_long)}
+\end{alltt}
+\begin{verbatim}
+##      continent        country  obs_type year obs_values
+## 5107    Europe         Sweden gdpPercap 2007  33859.748
+## 5108    Europe    Switzerland gdpPercap 2007  37506.419
+## 5109    Europe         Turkey gdpPercap 2007   8458.276
+## 5110    Europe United Kingdom gdpPercap 2007  33203.261
+## 5111   Oceania      Australia gdpPercap 2007  34435.367
+## 5112   Oceania    New Zealand gdpPercap 2007  25185.009
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+Finally, we spread the long version of the data to get the original intermediate version.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{gapminder_normal} \hlkwb{<-} \hlstd{gapminder_long} \hlopt{%>%}
+  \hlkwd{spread}\hlstd{(obs_type, obs_values)}
+
+\hlcom{# check that is looks like the original data}
+\hlkwd{head}\hlstd{(gapminder_normal)}
+\end{alltt}
+\begin{verbatim}
+##   continent country year gdpPercap lifeExp      pop
+## 1    Africa Algeria 1952  2449.008  43.077  9279525
+## 2    Africa Algeria 1957  3013.976  45.685 10270856
+## 3    Africa Algeria 1962  2550.817  48.303 11000948
+## 4    Africa Algeria 1967  3246.992  51.407 12760499
+## 5    Africa Algeria 1972  4182.664  54.518 14760787
+## 6    Africa Algeria 1977  4910.417  58.014 17152804
+\end{verbatim}
+\begin{alltt}
+\hlkwd{dim}\hlstd{(gapminder_normal)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1704    6
+\end{verbatim}
+\begin{alltt}
+\hlkwd{dim}\hlstd{(gapminder_long)}
+\end{alltt}
+\begin{verbatim}
+## [1] 5112    5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\end{document}

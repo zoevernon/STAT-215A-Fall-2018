@@ -1,0 +1,114 @@
+---
+title: "Gapminder exploration"
+author: "Zoe Vernon"
+date: "8/31/2018"
+header-includes:
+   - \usepackage{float}
+output: 
+  pdf_document:
+    number_sections: true
+---
+
+<!-- Thanks to Rebecca Barter for sharing this with me-->
+
+# Introduction
+
+Gapminder is an excellent organization aimed at increasing the use and understanding of statistics on a number of global topics. They collect a variety of data from many sources and aim to produce fact-based statistics reflecting the current state of our world. The data we are exploring throughout this analysis consists of population, life expectency and GDP information for many countries through time.
+
+The data can be found from https://raw.githubusercontent.com/resbaz/r-novice-gapminder-files/master/data/gapminder-FiveYearData.csv if you would like to download it yourself.
+
+```{r packages, echo = FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(knitr)
+```
+
+```{r scripts, echo = FALSE, warning=FALSE, message=FALSE}
+source("R/load.R")
+source("R/clean.R")
+source("R/utils.R")
+```
+
+Fortunately, the data was already very clean, so we did not conduct any major modifications to the data.
+
+
+```{r load-data, echo = FALSE}
+# load the original gapminder data
+gapminder_orig <- loadGapminderData()
+
+# clean the gapminder data
+gapminder <- cleanGapminderData(gapminder_orig)
+```
+
+
+# Visualizing the gapminder data (ggplot2)
+
+
+1. We are interested in exploring life expectancy as a function of GDP. Create scatterplot of life expectancy versus GDP using ```ggplot()``` where the size of points are based on the population of the country and they are colored by the continent the country resides in. 
+
+```{r gdp-life, echo = FALSE, fig.width = 6, fig.height = 4, fig.align="center", fig.cap = "Life expectancy versus GDP for all countries in the year 2007", fig.pos = "H"}
+
+```
+
+2. Next, we explore change in life expectancy over time. Create a series of boxplots using ```ggplot()```, one for each year-continent combination, where each data point corresponds to the life expectency of a country for the given year in the given continent.
+
+```{r life-time, echo = FALSE, fig.width = 8, fig.height = 6, fig.align="center", fig.cap = "Life expectancy over time", fig.pos = "H"}
+
+```
+
+## Comparing GDP across continents (dplyr)
+
+1. Compute the mean and variance of the GDP for each continent without using ```dplyr()```
+
+```{r echo = FALSE, eval = FALSE}
+# calculate the avergae GDP per cap for different contents
+
+# the following code is very inneficient (it violates DRY)
+# it is also hard to read
+mean(gapminder[gapminder$continent == "Africa", ]$gdp_per_cap)
+mean(gapminder[gapminder$continent == "Europe", ]$gdp_per_cap)
+mean(gapminder[gapminder$continent == "Americas", ]$gdp_per_cap)
+mean(gapminder[gapminder$continent == "Asia", ]$gdp_per_cap)
+```
+
+2. Perform the same computation using ```group_by()``` and ```summarize()``` and print the table using the ```kable()``` function
+
+```{r gdp_table, echo = FALSE}
+
+```
+
+
+3. Next, we want to ask about raw GDP (i.e. overall GDP for each country, rather than standardized by per capita). Create a table that shows the average total GDP for each continent in 2007.
+
+
+```{r total_gdp_table, echo = FALSE}
+
+```
+
+
+## Using ```tidyr()``` with the gapminder data 
+
+The gapminder data that we used for visualization was already in a clean usuable format.  Here we are given a dataset that requires some processing to get in a more useful form.  Transform the ```gapminder_wide``` dataset so that it is in the same form as the original gapminder dataset.  
+
+```{r, load_wide_data, echo = TRUE, message = FALSE, warning = FALSE}
+# load the wide format of the data
+gapminder_wide <- loadGapminderData(path = "data/", 
+                                    filename = "gapminder_wide.csv")
+
+# look at wide_data compared to original 
+dim(gapminder_wide)
+dim(gapminder)
+head(gapminder_wide)[, c(1:4, 37:38)]
+head(gapminder)
+```
+
+1. Use the ```gather()``` and ```separate()``` functions to create a long version of the data where we only have five columns: continent, country, the value of an observation, the type of observation (i.e. GDP, life expectancy, or population size), and the year of the observation. 
+```{r, to_long, echo = TRUE, warning = FALSE, message = FALSE}
+
+```
+
+2. Finally, use ```spread()``` to convert the long version of the data to get the original intermediate version.
+
+```{r, to_normal, echo = TRUE, warning = FALSE, message = FALSE}
+
+```
+
