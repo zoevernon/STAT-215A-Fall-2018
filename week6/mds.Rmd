@@ -1,0 +1,63 @@
+---
+title: "Multidimensional scaling"
+output: html_document
+---
+source: http://www.analytictech.com/borgatti/mds.htm
+
+# MDS for US cities example
+
+```{r setup, warning = FALSE, message = FALSE}
+# load libraries 
+library(ggplot2)
+
+# read in the data
+D <- read.csv("us_cities_distance.csv")
+head(D)
+
+# remove first column
+D <- D[, -1]
+
+# save number of oberservations
+n <- nrow(D)
+```
+
+1. Define the centering matrix J 
+$$
+J = I  - \frac{1}{n}11'
+$$
+and apply double centering (i.e. compute $B$)
+
+$$
+B = -\frac{1}{2} JD^{(2)}J
+$$
+
+```{r centering matrix}
+# define centering matrix J
+
+# Apply double centering
+
+```
+
+2. Obtain eigendecomposition of $B$
+```{r}
+# obtain eigendecomposition of B
+
+```
+
+3. Define projected $X$ 
+$$
+X = E_m\Lambda_m^{1/2}
+$$
+where $E_m$ is the matrix of $m$ eigenvectors and $\Lambda_m$ is the diagnonal matrix of $m$ eigenvalues.
+```{r}
+# define projected X
+
+```
+
+4. Plot the positions of the cities 
+```{r}
+# plot the positions of the cities
+
+```
+
+
