@@ -1,0 +1,197 @@
+---
+title: 'Caret: an R package for machine learning'
+author: "Zoe Vernon"
+date: "11/15/2018"
+output: html_document
+---
+Materials prepared by Rebecca Barter and adapted to R Markdown. Package developed by Max Kuhn.
+
+R has a wide number of packages for machine learning (ML), which is great, but also quite frustrating since each package was designed independently and has very different syntax, inputs and outputs.
+
+This means that if you want to do machine learning in R, you have to learn a large number of separate methods.
+
+Recognizing this, Max Kuhn (at the time working in drug discovery at Pfizer, now at RStudio) decided to put together a single package for performing any machine learning method you like. This package is called caret and can be thought of as scikit-learn for R. Caret stands for **C**lassification **A**nd **R**egression **T**raining.
+
+Not only does caret allow you to run a plethora of ML methods, it also provides tools for auxiliary techniques such as:
+
+* Data preparation (imputation, centering/scaling data, removing correlated predictors, reducing skewness)
+* Data splitting
+* Variable selection
+* Model evaluation
+
+An extensive vignette for caret can be found here: https://topepo.github.io/caret/index.html
+
+## A simple view of caret: the default ```train``` function
+
+To implement your machine learning model of choice using caret you use the ```train``` function. The options for the method (model) are many and are listed here: https://topepo.github.io/caret/available-models.html. In the example below, we will use the ranger implementation of random forest.
+
+```{r message = FALSE, warning = FALSE}
+# load in packages
+library(caret)
+library(ranger)
+library(dplyr)
+library(e1071)
+# load in abalone dataset
+abalone_train <- read.csv("abalone-training.csv")
+abalone_test <- read.csv("abalone-test.csv")
+head(abalone_train)
+```
+
+```{r}
+dim(abalone_train)
+```
+
+By default, the train function without any arguments re-runs the model over 25 bootstrap samples and across 3 options of the tuning parameter (the tuning parameter for ranger is mtry; the number of randomly selected predictors at each cut in the tree.
+
+```{r, cache = TRUE}
+# fit a random forest model (using ranger)
+rf_fit <- train(as.factor(old) ~ sex * length + length^2 + shucked.weight, 
+                data = abalone_train, 
+                method = "ranger")
+
+rf_fit
+```
+
+To test the data on an independent test set is equally as simple using the inbuilt predict function.
+
+```{r}
+# predict the outcome on a test set
+abalone_rf_pred <- predict(rf_fit, abalone_test)
+# compare predicted outcome and true outcome
+confusionMatrix(as.factor(abalone_rf_pred), 
+                as.factor(abalone_test$old))
+```
+
+## Getting a little fancier with caret
+We have now seen how to fit a model along with the default resampling implementation (bootstrapping) and parameter selection. While this is great, there are many more things we could do with caret.
+
+### Pre-processing (```preProcess```)
+There are a number of pre-processing steps that are easily implemented by caret. Several stand-alone functions from caret target specific issues that might arise when setting up the model. These include
+
+1. ```dummyVars```: creating dummy variables from categorical varibales with multiple categories
+2. ```nearZeroVar```: identifying zero- and near zero-variance predictors (these   may cause issues when subsampling)
+3. ```findCorrelation```: identifying correlated predictors
+4. ```findLinearCombos```: identify linear dependencies between predictors
+
+In addition to these individual functions, there also exists the ```preProcess``` function which can be used to perform more common tasks such as centering and scaling, imputation and transformation. ```preProcess``` takes in a data frame to be processed and a method which can be any of "BoxCox", "YeoJohnson", "expoTrans", "center", "scale", "range", "knnImpute", "bagImpute", "medianImpute", "pca", "ica", "spatialSign", "corr", "zv", "nzv", and "conditionalX".
+
+```{r}
+# center, scale and perform a YeoJohnson transformation
+# identify and remove variables with near zero variance
+# perform pca
+abalone_no_nzv_pca <- preProcess(select(abalone_train, - old), 
+                        method = c("center", "scale", "YeoJohnson", "nzv", "pca"))
+abalone_no_nzv_pca
+```
+
+```{r}
+# identify which variables were ignored, centered, scaled, etc
+abalone_no_nzv_pca$method
+```
+```{r}
+# identify the principal components
+abalone_no_nzv_pca$rotation
+```
+
+
+### Data splitting ```createDataPartition``` and ```groupKFold``` 
+Generating subsets of the data is easy with the ```createDataPartition``` function. While this function can be used to simply generate training and testing sets, it can also be used to subset the data while respecting important groupings that exist within the data.
+
+First, we show an example of performing general sample splitting to generate 10 different 80% subsamples
+
+```{r}
+# identify the indices of 10 80% subsamples of the iris data
+train_index <- createDataPartition(iris$Species,
+                                   p = 0.8,
+                                   list = FALSE,
+                                   times = 10)
+head(train_index)
+```
+While the above is incredibly useful, it is also very easy to do using a for loop. Not so exciting.
+
+Something that IS more exciting is the ability to do K-fold cross validation which respects groupings in the data. The ```groupKFold``` function does just that!
+
+As an example, let's consider the following madeup abalone groups so that each sequential set of 5 abalone that appear in the dataset together are in the same group. For simplicity we will only consider the first 50 abalone.
+
+```{r}
+abalone_grouped <- cbind(abalone_train[1:50, ], group = rep(1:10, each = 5))
+head(abalone_grouped, 10)
+```
+
+The following code separates the data into 10-folds for cross-validation while respecting the groups in the abalone data. That is, each group of abalone must always appear in the same group together.
+
+```{r}
+group_folds <- groupKFold(abalone_grouped$group, k = 10)
+group_folds
+```
+
+### Resampling options ```trainControl```
+One of the most important part of training ML models is tuning parammeters. You can use the ```trainControl``` function to specify a number of parameters (including sampling parameters) in your model. The object that is outputted from trainControl will be provided as an argument for train.
+
+```{r cache = TRUE}
+set.seed(998)
+# create a testing and training set
+in_training <- createDataPartition(abalone_train$old, p = .75, list = FALSE)
+training <- abalone_train[ in_training,]
+testing  <- abalone_train[-in_training,]
+
+# specify that the resampling method is 
+fit_control <- trainControl(## 10-fold CV
+                           method = "cv",
+                           number = 10)
+
+# run a random forest model
+set.seed(825)
+rf_fit_cv <- train(as.factor(old) ~ ., 
+                data = abalone_train, 
+                method = "ranger",
+                trControl = fit_control)
+rf_fit_cv
+```
+
+We could instead use our **grouped** folds (rather than random CV folds) by assigning the index argument of ```trainControl``` to be ```grouped_folds```.
+
+```{r cache = TRUE}
+# specify that the resampling method is 
+group_fit_control <- trainControl(## use grouped CV folds
+                                  index = group_folds,
+                                  method = "cv")
+set.seed(825)
+rf_fit_grouped <- train(as.factor(old) ~ ., 
+                        data = select(abalone_grouped, - group), 
+                        method = "ranger",
+                        trControl = group_fit_control)
+
+rf_fit_grouped
+```
+
+
+### Model parameter tuning options ```tuneGrid = ```
+You could spceify your own tuning grid for model parameters using the  ```tuneGrid``` argument of the ```train``` function. For example, you can define a grid of parameter combinations.
+
+```{r}
+rf_grid <- expand.grid(mtry = c(2, 3, 4, 5),
+                      splitrule = c("gini", "extratrees"),
+                      min.node.size = c(1, 2, 3))
+rf_grid
+```
+
+```{r cache = TRUE}
+# re-fit the model with the parameter grid
+rf_fit_grid <- train(as.factor(old) ~ ., 
+                     data = select(abalone_grouped, - group), 
+                     method = "ranger",
+                     trControl = group_fit_control,
+                     # provide a grid of parameters
+                     tuneGrid = rf_grid)
+rf_fit_grid
+```
+
+## More topics
+This tutorial has only scratched the surface of all of the options in the caret package. To find out more, see the extensive vignette https://topepo.github.io/caret/index.html.
+
+
+
+
+
+
